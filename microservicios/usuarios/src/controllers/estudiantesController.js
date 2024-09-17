@@ -39,11 +39,13 @@ router.post('/estudiantes', async (req, res) => {
     const estadoCivil = req.body.estadoCivil;
     const prestamo = req.body.prestamo;
     const beca = req.body.beca;
-    const desplazado = req.body.beca;
+    const desplazado = req.body.desplazado;
+    const totalCreditos = 0; // Establece el valor por defecto
 
-    var result = await estudiantesModel.crearEstudiante(usuario, contrasena, nombre, correo, paisOrigen, necesidadesEspecialesEducacion, genero, estadoCivil, prestamo, beca, desplazado);
+    var result = await estudiantesModel.crearEstudiante(usuario, contrasena, nombre, correo, paisOrigen, necesidadesEspecialesEducacion, genero, estadoCivil, prestamo, beca, desplazado, totalCreditos);
     res.send("Usuario creado");
 });
+
 
 router.put('/estudiantes/:usuario', async (req, res) => {
     const usuario = req.params.usuario;
@@ -58,6 +60,28 @@ router.put('/estudiantes/:usuario', async (req, res) => {
     res.send("Estudiante actualizado");
 });
 
+// Obtener créditos totales del estudiante
+router.get('/estudiantes/:usuarioEstudiante/creditos', async (req, res) => {
+    const { usuarioEstudiante } = req.params;
+
+    try {
+        const estudiante = await estudiantesModel.obtenerEstudiante(usuarioEstudiante);
+
+        if (!estudiante) {
+            return res.status(404).json({ error: 'Estudiante no encontrado' });
+        }
+
+        // Supongamos que tienes una función que calcula los créditos totales
+        const totalCreditos = calcularTotalCreditos(estudiante.usuario); 
+
+        res.json({ totalCreditos });
+    } catch (error) {
+        console.error('Error al obtener créditos del estudiante:', error.message);
+        res.status(500).json({ error: 'Error al obtener créditos del estudiante' });
+    }
+});
+
+
 router.delete('/estudiantes/:usuario', async (req, res) => {
     const usuario = req.params.usuario;
 
@@ -66,5 +90,6 @@ router.delete('/estudiantes/:usuario', async (req, res) => {
     //console.log(result);
     res.send("Estudiante eliminado");
 });
+
 
 module.exports = router;

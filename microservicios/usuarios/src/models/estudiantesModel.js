@@ -29,9 +29,18 @@ async function validarEstudiante(usuario, contrasena) {
     return result;
 }
 
-async function crearEstudiante(usuario, contrasena, nombre, correo, paisOrigen, necesidadesEspecialesEducacion, genero, estadoCivil, prestamo, beca, desplazado) {
-    const result = await connection.query('INSERT INTO estudiantes VALUES(?,?,?,?,?,?,?,?,?,?,?)', [usuario, contrasena, nombre, correo, paisOrigen, necesidadesEspecialesEducacion, genero, estadoCivil, prestamo, beca, desplazado]);
-    return result;
+async function crearEstudiante(usuario, contrasena, nombre, correo, paisOrigen, necesidadesEspecialesEducacion, genero, estadoCivil, prestamo, beca, desplazado, totalCreditos) {
+    try {
+        const [result] = await connection.query(
+            `INSERT INTO estudiantes (usuario, contrasena, nombre, correo, paisOrigen, necesidadesEspecialesEducacion, genero, estadoCivil, prestamo, beca, desplazado, totalCreditos)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [usuario, contrasena, nombre, correo, paisOrigen, necesidadesEspecialesEducacion, genero, estadoCivil, prestamo, beca, desplazado, totalCreditos]
+        );
+        return result;
+    } catch (error) {
+        console.error('Error en crearEstudiante:', error.message);
+        throw error;
+    }
 }
 
 async function borrarEstudiante(usuario) {
