@@ -42,7 +42,8 @@ router.post('/estudiantes', async (req, res) => {
     const desplazado = req.body.desplazado;
     const totalCreditos = 0; // Establece el valor por defecto
 
-    var result = await estudiantesModel.crearEstudiante(usuario, contrasena, nombre, correo, paisOrigen, necesidadesEspecialesEducacion, genero, estadoCivil, prestamo, beca, desplazado, totalCreditos);
+    var result;
+    result = await estudiantesModel.crearEstudiante(usuario, contrasena, nombre, correo, paisOrigen, necesidadesEspecialesEducacion, genero, estadoCivil, prestamo, beca, desplazado, totalCreditos);
     res.send("Usuario creado");
 });
 
@@ -60,27 +61,27 @@ router.put('/estudiantes/:usuario', async (req, res) => {
     res.send("Estudiante actualizado");
 });
 
-// Obtener créditos totales del estudiante
-router.get('/estudiantes/:usuarioEstudiante/creditos', async (req, res) => {
-    const { usuarioEstudiante } = req.params;
+router.put('/estudiantes/:usuario/totalCreditos', async (req, res) => {
+    const { usuario } = req.params;
+    const { totalCreditos } = req.body;
+
+    if (typeof totalCreditos !== 'number' || totalCreditos < 0) {
+        return res.status(400).json({ error: 'Total de créditos debe ser un número no negativo' });
+    }
 
     try {
-        const estudiante = await estudiantesModel.obtenerEstudiante(usuarioEstudiante);
+        const result = await estudiantesModel.actualizarTotalCreditos(usuario, totalCreditos);
 
-        if (!estudiante) {
+        if (result.affectedRows === 0) {
             return res.status(404).json({ error: 'Estudiante no encontrado' });
         }
 
-        // Supongamos que tienes una función que calcula los créditos totales
-        const totalCreditos = calcularTotalCreditos(estudiante.usuario); 
-
-        res.json({ totalCreditos });
+        res.status(200).json({ message: 'Total de créditos actualizado exitosamente' });
     } catch (error) {
-        console.error('Error al obtener créditos del estudiante:', error.message);
-        res.status(500).json({ error: 'Error al obtener créditos del estudiante' });
+        console.error('Error al actualizar total de créditos del estudiante:', error.message);
+        res.status(500).json({ error: 'Error al actualizar el total de créditos del estudiante' });
     }
 });
-
 
 router.delete('/estudiantes/:usuario', async (req, res) => {
     const usuario = req.params.usuario;

@@ -47,7 +47,14 @@ async function borrarEstudiante(usuario) {
     const result = await connection.query('DELETE FROM estudiantes WHERE usuario = ?', usuario);
     return result[0];
 }
+async function actualizarTotalCreditos(usuario, totalCreditos) {
+    const [result] = await connection.query(
+        'UPDATE estudiantes SET totalCreditos = ? WHERE usuario = ?',
+        [totalCreditos, usuario]
+    );
+    return result;
+}
 
 module.exports = {
-    traerEstudiantes, traerEstudiante, actualizarEstudiantes, validarEstudiante, crearEstudiante, borrarEstudiante
+    traerEstudiantes, traerEstudiante, actualizarEstudiantes, validarEstudiante, crearEstudiante, borrarEstudiante, actualizarTotalCreditos
 }
