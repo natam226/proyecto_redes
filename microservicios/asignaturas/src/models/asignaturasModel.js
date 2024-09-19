@@ -5,7 +5,7 @@ const connection = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: '',
-    port: '3307',
+    port: '3306',
     database: 'asignaturasDB'
 });
 
@@ -22,14 +22,23 @@ async function traerAsignaturaPorId(id) {
 }
 
 // Crear una nueva asignatura
-async function crearAsignatura(nombre, creditos, cupos, semestre) {
-    const [result] = await connection.query('INSERT INTO asignaturas (nombre, creditos, cupos, semestre) VALUES (?, ?, ?, ?)', [nombre, creditos, cupos, semestre]);
+async function crearAsignatura(nombreAsignatura, creditos, cupos, semestre) {
+    const [result] = await connection.query('INSERT INTO asignaturas (nombreAsignatura, creditos, cupos, semestre) VALUES (?, ?, ?, ?)', [nombreAsignatura, creditos, cupos, semestre]);
     return result;
 }
 
 // Actualizar una asignatura existente
-async function actualizarAsignatura(id, nombre, creditos, cupos, semestre) {
-    const [result] = await connection.query('UPDATE asignaturas SET nombre = ?, creditos = ?, cupos = ?, semestre = ? WHERE id = ?', [nombre, creditos, cupos, semestre, id]);
+async function actualizarAsignatura(id, nombreAsignatura, creditos, cupos, semestre) {
+    const [result] = await connection.query('UPDATE asignaturas SET nombreAsignatura = ?, creditos = ?, cupos = ?, semestre = ? WHERE id = ?', [nombreAsignatura, creditos, cupos, semestre, id]);
+    return result;
+}
+
+async function actualizarCupos(id, cupos) {
+    // Actualiza solo el campo 'cupos' para una asignatura específica
+    const [result] = await connection.query(
+        'UPDATE asignaturas SET cupos = ? WHERE id = ?',
+        [cupos, id]
+    );
     return result;
 }
 
@@ -44,5 +53,6 @@ module.exports = {
     traerAsignaturaPorId,
     crearAsignatura,
     actualizarAsignatura,
-    borrarAsignatura
+    borrarAsignatura,
+    actualizarCupos
 };

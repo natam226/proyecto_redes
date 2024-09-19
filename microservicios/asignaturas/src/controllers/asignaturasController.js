@@ -26,9 +26,9 @@ router.get('/asignaturas/:id', async (req, res) => {
 
 // Crear una nueva asignatura
 router.post('/asignaturas', async (req, res) => {
-    const { nombre, creditos, cupos, semestre } = req.body;
+    const { nombreAsignatura, creditos, cupos, semestre } = req.body;  // Cambiar a nombreAsignatura
     try {
-        await asignaturasModel.crearAsignatura(nombre, creditos, cupos, semestre);
+        await asignaturasModel.crearAsignatura(nombreAsignatura, creditos, cupos, semestre);
         res.status(201).send('Asignatura creada');
     } catch (error) {
         res.status(500).json({ message: 'Error al crear la asignatura', error });
@@ -38,22 +38,40 @@ router.post('/asignaturas', async (req, res) => {
 // Actualizar una asignatura
 router.put('/asignaturas/:id', async (req, res) => {
     const id = req.params.id;
-    const { nombre, creditos, cupos, semestre } = req.body;
+    const { nombreAsignatura, creditos, cupos, semestre } = req.body;  // Cambiar a nombreAsignatura
     try {
-        const result = await asignaturasModel.actualizarAsignatura(id, nombre, creditos, cupos, semestre);
-        if (result.matchedCount === 0) return res.status(404).json({ message: 'Asignatura no encontrada' });
+        const result = await asignaturasModel.actualizarAsignatura(id, nombreAsignatura, creditos, cupos, semestre);
+        if (result.affectedRows === 0) return res.status(404).json({ message: 'Asignatura no encontrada' });
         res.send('Asignatura actualizada');
     } catch (error) {
         res.status(500).json({ message: 'Error al actualizar la asignatura', error });
     }
 });
 
+router.put('/asignaturas/:id/cupos', async (req, res) => {
+    const { id } = req.params;
+    const { cupos } = req.body;
+
+    if (typeof cupos !== 'number') {
+        return res.status(400).json({ error: 'Cupos debe ser un número' });
+    }
+
+    try {
+        await asignaturasModel.actualizarCupos(id, cupos);
+        res.status(200).json({ message: 'Cupos de asignatura actualizados exitosamente' });
+    } catch (error) {
+        console.error('Error al actualizar cupos de asignatura:', error.message);
+        res.status(500).json({ error: 'Error al actualizar los cupos de la asignatura' });
+    }
+});
+
+
 // Eliminar una asignatura
 router.delete('/asignaturas/:id', async (req, res) => {
     const id = req.params.id;
     try {
         const result = await asignaturasModel.borrarAsignatura(id);
-        if (result.deletedCount === 0) return res.status(404).json({ message: 'Asignatura no encontrada' });
+        if (result.affectedRows === 0) return res.status(404).json({ message: 'Asignatura no encontrada' });
         res.send('Asignatura borrada');
     } catch (error) {
         res.status(500).json({ message: 'Error al borrar la asignatura', error });

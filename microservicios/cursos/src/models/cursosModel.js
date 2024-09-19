@@ -4,7 +4,7 @@ const connection = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: '',
-    port: '3307',
+    port: '3306',
     database: 'cursosDB'
 });
 
@@ -26,8 +26,8 @@ async function obtenerNotaPorEstudianteYAsignatura(nombreEstudiante, nombreAsign
 }
 
 // Obtener cursos de un profesor en un periodo específico
-async function obtenerCursosPorProfesorYPeriodo(nombreProfesor, periodo) {
-    const [rows] = await connection.query('SELECT * FROM cursos WHERE profesor = ? AND periodo = ?', [nombreProfesor, periodo]);
+async function obtenerCursosPorProfesorYPeriodo(correoProfesor, periodo) {
+    const [rows] = await connection.query('SELECT * FROM cursos WHERE correoProfesor = ? AND periodo = ?', [correoProfesor, periodo]);
     return rows;
 }
 
@@ -45,7 +45,7 @@ async function traerCursoPorId(id) {
 
 // Crear un nuevo curso
 async function crearCurso(curso) {
-    const { nombreCurso, grupo, profesor, nombreEstudiante, correoEstudiante, nota, periodo } = curso;
+    const { nombreCurso, grupo, correoProfesor, nombreEstudiante, correoEstudiante, nota, periodo } = curso;
 
     // Verificar si el estudiante ya está matriculado en el curso para el periodo actual
     const cursosMatriculados = await obtenerCursosPorEstudianteYPeriodo(nombreEstudiante, periodo);
@@ -60,8 +60,8 @@ async function crearCurso(curso) {
 
     try {
         const [result] = await connection.query(
-            'INSERT INTO cursos (nombreCurso, grupo, profesor, nombreEstudiante, correoEstudiante, nota, periodo) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            [nombreCurso, grupo, profesor, nombreEstudiante, correoEstudiante, nota, periodo]
+            'INSERT INTO cursos (nombreCurso, grupo, correoProfesor, nombreEstudiante, correoEstudiante, nota, periodo) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [nombreCurso, grupo, correoProfesor, nombreEstudiante, correoEstudiante, nota, periodo]
         );
         return result;
     } catch (error) {
@@ -106,13 +106,13 @@ async function obtenerCursosPorGrupoYNombre(grupo, nombreCurso, periodo) {
     return rows;
 }
 
-// Obtener profesor por curso y grupo
-async function obtenerProfesorPorCursoYGrupo(nombreCurso, grupo, periodo) {
+// Obtener correo del profesor por curso y grupo
+async function obtenerCorreoProfesorPorCursoYGrupo(nombreCurso, grupo, periodo) {
     try {
-        const [rows] = await connection.query('SELECT profesor FROM cursos WHERE nombreCurso = ? AND grupo = ? AND periodo = ?', [nombreCurso, grupo, periodo]);
-        return rows[0]?.profesor;
+        const [rows] = await connection.query('SELECT correoProfesor FROM cursos WHERE nombreCurso = ? AND grupo = ? AND periodo = ?', [nombreCurso, grupo, periodo]);
+        return rows[0]?.correoProfesor;
     } catch (error) {
-        console.error('Error en obtenerProfesorPorCursoYGrupo:', error.message);
+        console.error('Error en obtenerCorreoProfesorPorCursoYGrupo:', error.message);
         throw error;
     }
 }
@@ -127,7 +127,7 @@ async function obtenerCursosPasadosPorEstudiante(usuario) {
 // Obtener cursos disponibles para matrícula
 async function obtenerCursosDisponiblesParaMatricula(usuarioEstudiante) {
     const [rows] = await connection.query(`
-        SELECT c.id, c.nombreCurso, c.grupo, c.creditos, a.nombreAsignatura
+        SELECT c.id, c.nombreCurso, c.grupo, c.nota, a.nombreAsignatura
         FROM cursos c
         JOIN asignaturas a ON c.nombreCurso = a.nombreAsignatura
         WHERE c.periodo = '2024-03'
@@ -149,8 +149,18 @@ async function verificarMatriculaDuplicada(usuarioEstudiante, nombreCurso, perio
     return rows.length > 0;
 }
 
-
-
+async function obtenerCursoNoCursadasOConNotaBaja(nombreEstudiante) {
+    const query = `
+        SELECT DISTINCT a.id, a.nombreCurso
+        FROM asignaturas a
+        LEFT JOIN cursos c ON a.nombreCurso = c.nombreCurso 
+            AND c.nombreEstudiante = ? 
+        WHERE c.nombreEstudiante IS NULL
+        OR c.nota <= 2.9
+    `;
+    const [rows] = await connection.query(query, [nombreEstudiante]);
+    return rows;
+}
 module.exports = {
     obtenerCursosPorEstudianteYPeriodo,
     obtenerCursosPorProfesorYPeriodo,
@@ -160,9 +170,10 @@ module.exports = {
     actualizarNota,
     obtenerNuevoGrupo,
     obtenerCursosPorGrupoYNombre,
-    obtenerProfesorPorCursoYGrupo,
+    obtenerCorreoProfesorPorCursoYGrupo,
     obtenerCursosPasadosPorEstudiante,
     obtenerNotaPorEstudianteYAsignatura,
     obtenerCursosDisponiblesParaMatricula,
-    verificarMatriculaDuplicada
+    verificarMatriculaDuplicada,
+    obtenerCursoNoCursadasOConNotaBaja
 };

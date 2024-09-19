@@ -5,6 +5,9 @@ const morgan = require('morgan');
 const app = express();
 const cors = require('cors');
 
+app.use(morgan('dev'));
+app.use(express.json());
+
 app.use(cors({
     origin: 'http://localhost:3000, http://192.168.100.2'  // Permite solicitudes solo desde localhost:3000
 }));
@@ -13,9 +16,6 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Métodos permitidos
     allowedHeaders: ['Content-Type']  // Encabezados permitidos
 }));
-
-app.use(morgan('dev'));
-app.use(express.json());
 
 app.use(cursosController); // Asegúrate de usar un prefijo para evitar conflictos con otras rutas
 

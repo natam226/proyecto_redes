@@ -51,16 +51,16 @@ router.get('/cursos/pasados/estudiante/:nombre', async (req, res) => {
 });
 
 // Obtener cursos de un profesor en el periodo actual (2024-3)
-router.get('/cursos/profesor/:nombreProfesor', async (req, res) => {
-    const { nombreProfesor } = req.params;
+router.get('/cursos/profesor/:correoProfesor', async (req, res) => {
+    const { correoProfesor } = req.params;
     const periodoActual = '2024-3'; // Define el periodo actual aquí
 
-    if (!nombreProfesor) {
-        return res.status(400).json({ error: 'Falta el parámetro de nombre del profesor' });
+    if (!correoProfesor) {
+        return res.status(400).json({ error: 'Falta el parámetro de correo del profesor' });
     }
 
     try {
-        const cursos = await cursosModel.obtenerCursosPorProfesorYPeriodo(nombreProfesor, periodoActual);
+        const cursos = await cursosModel.obtenerCursosPorProfesorYPeriodo(correoProfesor, periodoActual);
 
         if (cursos.length === 0) {
             return res.status(404).json({ error: 'Cursos no encontrados' });
@@ -126,6 +126,7 @@ router.get('/cursos/:grupo/:nombreCurso', async (req, res) => {
 // Matricular un estudiante en un curso
 router.post('/cursos/matricular', async (req, res) => {
     const { usuarioEstudiante, idAsignatura } = req.body;
+    const periodo = req.query.periodo || '2024-3'; // Usar el período de consulta o un valor predeterminado
 
     if (!usuarioEstudiante || !idAsignatura) {
         return res.status(400).json({ error: 'Faltan datos en la solicitud' });
@@ -160,17 +161,25 @@ router.post('/cursos/matricular', async (req, res) => {
             return res.status(400).json({ error: 'No hay cupos disponibles' });
         }
 
+        // Verificar si el estudiante puede matricularse en esta asignatura
+        const asignaturasNoCursadas = await cursosModel.obtenerAsignaturasNoCursadasPorEstudiante(usuarioEstudiante, periodo);
+        const asignaturasConNotaBaja = await cursosModel.obtenerAsignaturasCursadasConNotaBaja(usuarioEstudiante, periodo);
+        
+        if (!asignaturasNoCursadas.includes(nombreAsignatura) && !asignaturasConNotaBaja.includes(nombreAsignatura)) {
+            return res.status(400).json({ error: 'El estudiante no puede matricularse en esta asignatura' });
+        }
+
         // Obtener el grupo disponible para el curso
-        const grupo = await cursosModel.obtenerNuevoGrupo(nombreAsignatura, '2024-3');
+        const grupo = await cursosModel.obtenerNuevoGrupo(nombreAsignatura, periodo);
 
         // Verificar cupos disponibles para el grupo
-        const cursosEnGrupo = await cursosModel.obtenerCursosPorGrupoYNombre(grupo, nombreAsignatura, '2024-3');
+        const cursosEnGrupo = await cursosModel.obtenerCursosPorGrupoYNombre(grupo, nombreAsignatura, periodo);
         if (cursosEnGrupo.length >= 20) {
             return res.status(400).json({ error: `El grupo ${grupo} ya está lleno para la asignatura ${nombreAsignatura}` });
         }
 
         // Obtener profesor asignado para el curso, grupo y periodo
-        let profesor = await cursosModel.obtenerProfesorPorCursoYGrupo(nombreAsignatura, grupo, '2024-3');
+        let profesor = await cursosModel.obtenerProfesorPorCursoYGrupo(nombreAsignatura, grupo, periodo);
 
         // Si no se encontró un profesor asignado, asignar uno aleatorio
         if (!profesor) {
@@ -190,7 +199,7 @@ router.post('/cursos/matricular', async (req, res) => {
             nombreEstudiante: nombreEstudiante,
             correoEstudiante: correoEstudiante,
             nota: null,
-            periodo: '2024-3'
+            periodo: periodo
         };
 
         // Intentar crear el curso y manejar errores de entrada duplicada
@@ -208,29 +217,9 @@ router.post('/cursos/matricular', async (req, res) => {
         }
 
     } catch (error) {
-        console.error('Error en POST /cursos/matricular:', error.message);
-        res.status(500).json({ error: `Error al matricular estudiante: ${error.message}` });
+        console.error('Error al matricular estudiante:', error.message);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
-
-// Actualizar la nota de un estudiante en un curso específico
-// Definir la ruta para actualizar la nota
-router.put('/cursos/actualizarNota', async (req, res) => {
-    const { nombreCurso, grupo, nombreEstudiante, nota } = req.body;
-    const periodo = '2024-3'; // Establecer el periodo automáticamente como 2024-3
-
-    if (!nombreCurso || !grupo || !nombreEstudiante || nota === undefined) {
-        return res.status(400).json({ error: 'Faltan datos en la solicitud' });
-    }
-
-    try {
-        await cursosModel.actualizarNota(nombreCurso, grupo, periodo, nombreEstudiante, nota);
-        res.json({ message: 'Nota actualizada exitosamente' });
-    } catch (error) {
-        console.error('Error al actualizar la nota:', error.message);
-        res.status(500).json({ error: `Error al actualizar la nota: ${error.message}` });
-    }
-});
-
 
 module.exports = router;

@@ -22,11 +22,35 @@ router.get('/estudiantes/:usuario', async (req, res) => {
 router.get('/estudiantes/:usuario/:contrasena', async (req, res) => {
     const usuario = req.params.usuario;
     const contrasena = req.params.contrasena;
-    var result;
-    result = await estudiantesModel.validarEstudiante(usuario, contrasena);
-    //console.log(result);
-    res.json(result[0]);
+
+    try {
+        const result = await estudiantesModel.validarEstudiante(usuario, contrasena);
+
+        // Verificar si se encontró un estudiante con las credenciales dadas
+        if (result.length > 0) {
+            // Credenciales válidas
+            res.status(200).json({
+                success: true,
+                message: "Inicio de sesión exitoso",
+                data: result[0] // Puedes incluir los datos del estudiante si lo deseas
+            });
+        } else {
+            // Credenciales inválidas
+            res.status(401).json({
+                success: false,
+                message: "Usuario o contraseña incorrectos"
+            });
+        }
+    } catch (error) {
+        // Manejo de errores del servidor
+        console.error('Error al validar estudiante:', error);
+        res.status(500).json({
+            success: false,
+            message: "Error interno del servidor"
+        });
+    }
 });
+
 
 router.post('/estudiantes', async (req, res) => {
     const usuario = req.body.usuario;

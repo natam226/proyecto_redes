@@ -5,7 +5,7 @@ const connection = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: '',
-    port: '3307',
+    port: '3306',
     database: 'usuariosDB'
 });
 
@@ -25,8 +25,9 @@ async function actualizarEstudiantes(usuario, contrasena, nombre, correo, genero
 }
 
 async function validarEstudiante(usuario, contrasena) {
-    const result = await connection.query('SELECT * FROM estudiantes WHERE usuario = ? AND contrasena = ?', [usuario, contrasena]);
-    return result;
+    const query = 'SELECT * FROM estudiantes WHERE usuario = ? AND contrasena = ?';
+    const [rows] = await connection.query(query, [usuario, contrasena]);
+    return rows;
 }
 
 async function crearEstudiante(usuario, contrasena, nombre, correo, paisOrigen, necesidadesEspecialesEducacion, genero, estadoCivil, prestamo, beca, desplazado, totalCreditos) {

@@ -38,7 +38,8 @@ router.post('/profesores', async (req, res) => {
     const correo = req.body.correo;
     const ultimoGradoDeFormacion = req.body.ultimoGradoDeFormacion;
 
-    var result = await profesoresModel.crearProfesor(usuario, contrasena, rol, nombre, correo, ultimoGradoDeFormacion);
+    var result;
+    result = await profesoresModel.crearProfesor(usuario, contrasena, rol, nombre, correo, ultimoGradoDeFormacion);
     res.send("Profesor creado");
 });
 
