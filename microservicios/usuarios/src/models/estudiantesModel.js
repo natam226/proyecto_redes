@@ -14,6 +14,7 @@ async function traerEstudiantes() {
     const result = await connection.query('SELECT * FROM estudiantes');
     return result[0];
 }
+
 async function traerEstudiante(usuario) {
     const result = await connection.query('SELECT * FROM estudiantes WHERE usuario = ?', usuario);
     return result[0];
@@ -48,6 +49,7 @@ async function borrarEstudiante(usuario) {
     const result = await connection.query('DELETE FROM estudiantes WHERE usuario = ?', usuario);
     return result[0];
 }
+
 async function actualizarTotalCreditos(usuario, totalCreditos) {
     const [result] = await connection.query(
         'UPDATE estudiantes SET totalCreditos = ? WHERE usuario = ?',

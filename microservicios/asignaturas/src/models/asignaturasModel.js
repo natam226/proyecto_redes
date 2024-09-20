@@ -48,6 +48,8 @@ async function borrarAsignatura(id) {
     return result;
 }
 
+
+
 module.exports = {
     traerAsignaturas,
     traerAsignaturaPorId,

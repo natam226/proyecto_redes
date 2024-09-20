@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const router = Router();
 const asignaturasModel = require('../models/asignaturasModel');
+const axios = require('axios');
 
 // Obtener todas las asignaturas
 router.get('/asignaturas', async (req, res) => {
@@ -32,6 +33,27 @@ router.post('/asignaturas', async (req, res) => {
         res.status(201).send('Asignatura creada');
     } catch (error) {
         res.status(500).json({ message: 'Error al crear la asignatura', error });
+    }
+});
+
+router.get('/asignaturas/pendientes/:usuario', async (req, res) => {
+    const { usuario } = req.params;
+
+    if (!usuario) {
+        return res.status(400).json({ error: 'Falta el parámetro de usuario' });
+    }
+
+    try {
+        const asignaturas = await asignaturasPorCursar(usuario);
+
+        if (asignaturas.length === 0) {
+            return res.status(404).json({ error: 'No se encontraron asignaturas pendientes por cursar' });
+        }
+
+        res.json(asignaturas);
+    } catch (error) {
+        console.error('Error al obtener asignaturas pendientes:', error.message);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
 
