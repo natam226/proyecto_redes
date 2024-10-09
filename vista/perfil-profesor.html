@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil Profesor</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #003366;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: block;
+        }
+        .sidebar a:hover {
+            background-color: #575757;
+        }
+        .content {
+            margin-left: 260px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <a href="cursos-asignados.html">Cursos Asignados</a>
+        <a href="perfil-profesor.html">Perfil Profesor</a>
+        <a href="metricas-profesores.html">Métricas</a>
+        <a href="cerrar-sesion.html">Cerrar sesión</a>
+    </div>
+
+    <div class="content">
+        <h2 class="text-center">Perfil del Profesor</h2>
+        <form id="profesorForm">
+            <div class="form-group">
+                <label for="usuario">Usuario</label>
+                <input type="text" class="form-control" id="usuario" disabled>
+            </div>
+            <div class="form-group">
+                <label for="contrasena">Contraseña</label>
+                <input type="password" class="form-control" id="contrasena" disabled>
+            </div>
+            <div class="form-group">
+                <label for="nombre">Nombre</label>
+                <input type="text" class="form-control" id="nombre" disabled>
+            </div>
+            <div class="form-group">
+                <label for="correo">Correo</label>
+                <input type="email" class="form-control" id="correo" disabled>
+            </div>
+            <div class="form-group">
+                <label for="ultimoGradoDeFormacion">Último Grado de Formación:</label>
+                <select class="form-control" id="ultimoGradoDeFormacion" disabled>
+                    <option value="Bachiller">Bachiller</option>
+                    <option value="Pregrado">Pregrado</option>
+                    <option value="Maestria">Maestría</option>
+                    <option value="Doctorado">Doctorado</option>
+                    <option value="Especializacion">Especialización</option>
+                </select>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            const usuarioProfesor = 'gpeachman2u'; // Cambia por el usuario real si es necesario
+            
+            // Obtener la información del profesor al cargar la página
+            $.get(`http://192.168.100.3:3005/profesores/${usuarioProfesor}`)
+                .done(function(data) {
+                    $('#usuario').val(data.usuario);
+                    $('#contrasena').val(data.contrasena);
+                    $('#nombre').val(data.nombre);
+                    $('#correo').val(data.correo);
+                    $('#ultimoGradoDeFormacion').val(data.ultimoGradoDeFormacion);
+                })
+                .fail(function() {
+                    alert('Error al cargar la información del profesor');
+                });
+        });
+    </script>
+</body>
+</html>

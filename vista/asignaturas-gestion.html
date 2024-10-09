@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Asignaturas</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #003366;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: block;
+        }
+        .sidebar a:hover {
+            background-color: #575757;
+        }
+        .content {
+            margin-left: 260px;
+            padding: 20px;
+        }
+        .btn-primary {
+            background-color: #003366;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #002244;
+        }
+        .btn-danger:hover {
+            background-color: #cc0000;
+        }
+        table {
+            width: 100%;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="cursos-gestion.html">Gestión de Cursos</a>
+        <a href="usuarios-gestion.html">Gestión de Usuarios</a>
+        <a href="asignaturas-gestion.html">Gestión asignaturas</a>
+        <a href="admin-perfil.html">Perfil Administrador</a>
+        <a href="metricas-admin.html">Métricas</a>
+        <a href="cerrar-sesion.html">Cerrar sesión</a>
+
+    </div>
+
+    <div class="content">
+        <h2 class="text-center">Gestión de Asignaturas</h2>
+        <button class="btn btn-success mb-3" id="crearAsignaturaBtn">Crear Nueva Asignatura</button>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Créditos</th>
+                    <th>Cupos</th>
+                    <th>Semestre</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="asignaturasTable">
+                <!-- Se cargan las asignaturas aquí -->
+            </tbody>
+        </table>
+
+        <!-- Formulario para crear/editar asignaturas -->
+        <div id="asignaturaForm" style="display: none;">
+            <h3 id="formTitle">Crear Asignatura</h3>
+            <form id="formAsignatura">
+                <input type="hidden" id="asignaturaId">
+                <div class="form-group">
+                    <label for="nombreAsignatura">Nombre de la Asignatura:</label>
+                    <input type="text" class="form-control" id="nombreAsignatura" required>
+                </div>
+                <div class="form-group">
+                    <label for="creditos">Créditos:</label>
+                    <input type="number" class="form-control" id="creditos" required>
+                </div>
+                <div class="form-group">
+                    <label for="cupos">Cupos:</label>
+                    <input type="number" class="form-control" id="cupos" required>
+                </div>
+                <div class="form-group">
+                    <label for="semestre">Semestre:</label>
+                    <input type="number" class="form-control" id="semestre" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button" class="btn btn-danger" id="cancelarBtn">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Cargar asignaturas al cargar la página
+            cargarAsignaturas();
+
+            // Mostrar formulario para crear asignatura
+            $('#crearAsignaturaBtn').click(function() {
+                $('#formTitle').text('Crear Asignatura');
+                $('#asignaturaForm').show();
+                $('#formAsignatura')[0].reset();
+                $('#asignaturaId').val('');
+            });
+
+            // Cancelar formulario
+            $('#cancelarBtn').click(function() {
+                $('#asignaturaForm').hide();
+            });
+
+            // Enviar formulario
+            $('#formAsignatura').submit(function(event) {
+                event.preventDefault();
+                const id = $('#asignaturaId').val();
+                const url = id ? `http://192.168.100.3:3006/asignaturas/${id}` : 'http://192.168.100.3:3006/asignaturas';
+                const method = id ? 'PUT' : 'POST';
+                $.ajax({
+                    url: url,
+                    method: method,
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        nombreAsignatura: $('#nombreAsignatura').val(),
+                        creditos: $('#creditos').val(),
+                        cupos: $('#cupos').val(),
+                        semestre: $('#semestre').val()
+                    }),
+                    success: function() {
+                        $('#asignaturaForm').hide();
+                        cargarAsignaturas();
+                    },
+                    error: function() {
+                        alert('Error al guardar la asignatura');
+                    }
+                });
+            });
+
+            // Cargar asignaturas desde la API
+            function cargarAsignaturas() {
+    $.ajax({
+        url: 'http://192.168.100.3:3006/asignaturas',
+        method: 'GET',
+        success: function(data) {
+            const tableBody = $('#asignaturasTable');
+            tableBody.empty();
+            data.forEach(asignatura => {
+                tableBody.append(`
+                    <tr>
+                        <td>${asignatura.id || 'sin ID'}</td>
+                        <td>${asignatura.nombreAsignatura || 'sin nombre'}</td>
+                        <td>${asignatura.creditos !== undefined ? asignatura.creditos : 'sin créditos'}</td>
+                        <td>${asignatura.cupos !== undefined ? asignatura.cupos : 'sin cupos'}</td>
+                        <td>${asignatura.semestre || 'sin semestre'}</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm editarBtn" data-id="${asignatura.id}">Editar</button>
+                            <button class="btn btn-danger btn-sm eliminarBtn" data-id="${asignatura.id}">Eliminar</button>
+                        </td>
+                    </tr>
+                `);
+            });
+        },
+        error: function() {
+            alert('Error al cargar las asignaturas');
+        }
+    });
+}
+
+
+            // Editar asignatura
+            $('#asignaturasTable').on('click', '.editarBtn', function() {
+                const id = $(this).data('id');
+                $.ajax({
+                    url: `http://192.168.100.3:3006/asignaturas/${id}`,
+                    method: 'GET',
+                    success: function(asignatura) {
+                        $('#formTitle').text('Editar Asignatura');
+                        $('#asignaturaId').val(asignatura.id);
+                        $('#nombreAsignatura').val(asignatura.nombreAsignatura);
+                        $('#creditos').val(asignatura.creditos);
+                        $('#cupos').val(asignatura.cupos);
+                        $('#semestre').val(asignatura.semestre);
+                        $('#asignaturaForm').show();
+                    },
+                    error: function() {
+                        alert('Error al cargar los detalles de la asignatura');
+                    }
+                });
+            });
+
+            // Eliminar asignatura
+            $('#asignaturasTable').on('click', '.eliminarBtn', function() {
+                const id = $(this).data('id');
+                if (confirm('¿Está seguro de que desea eliminar esta asignatura?')) {
+                    $.ajax({
+                        url: `http://192.168.100.3:3006/asignaturas/${id}`,
+                        method: 'DELETE',
+                        success: function() {
+                            cargarAsignaturas();
+                        },
+                        error: function() {
+                            alert('Error al eliminar la asignatura');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

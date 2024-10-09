@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido a Nuestra Institución</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar-custom {
+            background-color: #003366; /* Azul oscuro */
+        }
+        .navbar-custom .navbar-brand, .navbar-custom .navbar-nav .nav-link {
+            color: #ffffff;
+        }
+        .container-info {
+            background-color: #ffffff;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .info-image {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .dropdown-menu a {
+            color: #003366;
+        }
+        .dropdown-menu a:hover {
+            background-color: #e2e6ea;
+        }
+        .btn-custom {
+            margin: 10px;
+        }
+        .btn-secondary-custom {
+            background-color: #003366; /* Azul oscuro */
+            border: none;
+            color: #ffffff; /* Texto blanco */
+        }
+        .btn-secondary-custom:hover {
+            background-color: #002244; /* Azul más oscuro */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <a class="navbar-brand" href="#">Institución</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="perfilDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Escoger perfil
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="perfilDropdown">
+                        <a class="dropdown-item" href="login-estudiante.html">Estudiante</a>
+                        <a class="dropdown-item" href="login-profesor.html">Profesor</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="container text-center mt-5">
+        <h1 class="display-4">Bienvenido a Nuestra Institución</h1>
+        <p class="lead">Ofrecemos una educación de calidad con un enfoque integral para estudiantes y profesionales.</p>
+    </div>
+
+    <div class="container text-center mt-5">
+        <h2>¿Quién eres?</h2>
+        <a href="login-estudiante.html" class="btn btn-primary btn-custom">Estudiante</a>
+        <a href="login-profesor.html" class="btn btn-secondary-custom btn-custom">Profesor</a>
+    </div>
+    
+    <div class="container container-info mt-5">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="https://via.placeholder.com/300" alt="Imagen Institución" class="info-image">
+                <img src="https://via.placeholder.com/300" alt="Imagen Institución" class="info-image">
+            </div>
+            <div class="col-md-8">
+                <h2>Sobre Nosotros</h2>
+                <p>Nuestra institución se dedica a proporcionar una educación de calidad que forma a los líderes del mañana. Con un equipo de profesionales altamente capacitados, ofrecemos programas académicos que van desde la educación técnica hasta la formación avanzada.</p>
+                <p>Contamos con una infraestructura moderna y una amplia gama de servicios para apoyar a nuestros estudiantes en su camino hacia el éxito académico y profesional.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
