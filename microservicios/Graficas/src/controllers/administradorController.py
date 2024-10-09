@@ -15,8 +15,8 @@ def grafico_necesidades():
     # Obtener datos de la base de datos
     datos = obtener_notas_estudiantes()
     
-    grafico_json = generar_grafico_necesidades_especiales(datos, infoEstudiante)
-    return jsonify({"grafico_json": grafico_json}), 200
+    grafico_path = generar_grafico_necesidades_especiales(datos, infoEstudiante)
+    return jsonify({"grafico_json": grafico_path}), 200
 
 @administrador_bp.route('/admin/grafico-estadoCivil', methods=['GET'])
 def grafico_estado_civil():

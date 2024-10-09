@@ -4,7 +4,7 @@ const mysql = require('mysql2/promise');
 const connection = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'MillY0619*',
     port: '3306',
     database: 'asignaturasDB'
 });
@@ -21,6 +21,12 @@ async function traerAsignaturaPorId(id) {
     return rows;
 }
 
+async function traerAsignaturaPorNombre(nombreAsignatura) {
+    console.log(`Buscando asignatura: ${nombreAsignatura}`); // Para depuración
+    const [rows] = await connection.query('SELECT * FROM asignaturas WHERE nombreAsignatura = ?', [nombreAsignatura]);
+    return rows;
+}
+
 // Crear una nueva asignatura
 async function crearAsignatura(nombreAsignatura, creditos, cupos, semestre) {
     const [result] = await connection.query('INSERT INTO asignaturas (nombreAsignatura, creditos, cupos, semestre) VALUES (?, ?, ?, ?)', [nombreAsignatura, creditos, cupos, semestre]);
@@ -33,21 +39,16 @@ async function actualizarAsignatura(id, nombreAsignatura, creditos, cupos, semes
     return result;
 }
 
-async function actualizarCupos(id, cupos) {
-    // Actualiza solo el campo 'cupos' para una asignatura específica
-    const [result] = await connection.query(
-        'UPDATE asignaturas SET cupos = ? WHERE id = ?',
-        [cupos, id]
-    );
-    return result;
-}
-
 // Eliminar una asignatura por ID
 async function borrarAsignatura(id) {
     const [result] = await connection.query('DELETE FROM asignaturas WHERE id = ?', [id]);
     return result;
 }
 
+async function actualizarCupos(id, nuevosCupos) {
+    const query = 'UPDATE asignaturas SET cupos = ? WHERE id = ?';
+    await connection.query(query, [nuevosCupos, id]);
+}
 
 
 module.exports = {
@@ -56,5 +57,6 @@ module.exports = {
     crearAsignatura,
     actualizarAsignatura,
     borrarAsignatura,
-    actualizarCupos
+    actualizarCupos,
+    traerAsignaturaPorNombre
 };

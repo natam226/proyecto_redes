@@ -3,67 +3,62 @@ const mysql = require('mysql2/promise');
 const connection = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'MillY0619*',
     port: '3306',
     database: 'cursosDB'
 });
 
+// Obtener cursos por estudiante y periodo
+async function obtenerCursosPorEstudianteYPeriodo(nombreEstudiante, periodo) {
+    const [result] = await connection.query(
+        `SELECT * FROM cursos WHERE nombreEstudiante = ? AND periodo = ?`, 
+        [nombreEstudiante, periodo]
+    );
+    return result;
+}
+
+async function obtenerCursosPorEstudianteNoPeriodo(nombreEstudiante, periodoExcluido) {
+    const query = `SELECT * FROM cursos WHERE nombreEstudiante = ? AND periodo <> ?`;
+    const [results] = await connection.query(query, [nombreEstudiante, periodoExcluido]);
+    return results;
+}
+
+
+
+// Obtener cursos por profesor y periodo
+async function obtenerCursosPorProfesorYPeriodo(correoProfesor, periodo) {
+    const [result] = await connection.query(
+        `SELECT * FROM cursos WHERE correoProfesor = ? AND periodo = ?`,
+        [correoProfesor, periodo]
+    );
+    return result;
+}
+
 // Obtener todos los cursos
 async function obtenerTodosLosCursos() {
-    const [rows] = await connection.query('SELECT * FROM cursos');
-    return rows;
+    const [result] = await connection.query('SELECT * FROM cursos');
+    return result;
 }
 
-// Traer un curso por ID
-async function traerCursoPorId(id) {
-    const [rows] = await connection.query('SELECT * FROM cursos WHERE id = ?', [id]);
-    return rows[0];
+// Traer curso por nombreCurso y grupo
+async function traerCursoPorNombreYGrupo(nombreCurso, grupo) {
+    const query = `
+        SELECT nombreCurso, grupo, nombreEstudiante, correoEstudiante, nota
+        FROM cursos
+        WHERE nombreCurso = ? AND grupo = ?`;    
+    const results = await connection.query(query, [nombreCurso, grupo]);
+    return results; // Asegúrate de que retornas todos los resultados
 }
 
-// Obtener cursos de un estudiante en un periodo específico
-async function obtenerCursosPorEstudianteYPeriodo(correoEstudiante, periodo) {
-    const [rows] = await connection.query('SELECT * FROM cursos WHERE correoEstudiante = ? AND periodo = ?', [correoEstudiante, periodo]);
-    return rows;
-}
-
-// Obtener cursos pasados por estudiante
-async function obtenerCursosPasadosPorEstudiante(correoEstudiante) {
-    const periodoActual = '2024-3'; // Periodo actual para la consulta
-    const [rows] = await connection.query('SELECT * FROM cursos WHERE correoEstudiante = ? AND periodo != ?', [correoEstudiante, periodoActual]);
-    return rows;
-}
-
-// Obtener cursos de un profesor en un periodo específico
-async function obtenerCursosPorProfesorYPeriodo(correoProfesor, periodo) {
-    const [rows] = await connection.query('SELECT * FROM cursos WHERE correoProfesor = ? AND periodo = ?', [correoProfesor, periodo]);
-    return rows;
-}
-
-// Obtener cursos por grupo y nombre
-async function obtenerCursosPorGrupoYNombre(grupo, nombreCurso, periodo) {
-    const [rows] = await connection.query('SELECT * FROM cursos WHERE grupo = ? AND nombreCurso = ? AND periodo = ?', [grupo, nombreCurso, periodo]);
-    return rows;
-}
-
-// Obtener correo del profesor por curso y grupo
-async function obtenerCorreoProfesorPorCursoYGrupo(nombreCurso, grupo, periodo) {
-    try {
-        const [rows] = await connection.query('SELECT correoProfesor FROM cursos WHERE nombreCurso = ? AND grupo = ? AND periodo = ?', [nombreCurso, grupo, periodo]);
-        return rows[0]?.correoProfesor;
-    } catch (error) {
-        console.error('Error en obtenerCorreoProfesorPorCursoYGrupo:', error.message);
-        throw error;
-    }
-}
 
 // Crear un nuevo curso
 async function crearCurso(curso) {
-    const { nombreCurso, grupo, correoProfesor, nombreEstudiante, correoEstudiante, nota, periodo } = curso;
-
+    const { nombreCurso, grupo, profesor, correoProfesor, nombreEstudiante, correoEstudiante, nota, periodo } = curso;
     try {
         const [result] = await connection.query(
-            'INSERT INTO cursos (nombreCurso, grupo, correoProfesor, nombreEstudiante, correoEstudiante, nota, periodo) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            [nombreCurso, grupo, correoProfesor, nombreEstudiante, correoEstudiante, nota, periodo]
+            `INSERT INTO cursos (nombreCurso, grupo, profesor, correoProfesor, nombreEstudiante, correoEstudiante, nota, periodo) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [nombreCurso, grupo, profesor, correoProfesor, nombreEstudiante, correoEstudiante, nota, periodo]
         );
         return result;
     } catch (error) {
@@ -72,67 +67,53 @@ async function crearCurso(curso) {
     }
 }
 
-// Actualizar nota de un curso
-async function actualizarNota(nombreCurso, grupo, periodo, correoEstudiante, nota) {
+async function actualizarNotaPorNombre(nombreEstudiante, grupo, nombreCurso, nota) {
+    const [result] = await connection.query(
+        `UPDATE cursos SET nota = ? WHERE nombreEstudiante = ? AND grupo = ? AND nombreCurso = ? AND periodo = '2024-3'`,
+        [nota, nombreEstudiante, grupo, nombreCurso]
+    );
+    return result;
+}
+// Obtener un nuevo número de grupo
+// Obtener el número de grupos disponibles por periodo
+async function contarGruposPorPeriodo(periodo) {
     try {
         const [result] = await connection.query(
-            'UPDATE cursos SET nota = ? WHERE nombreCurso = ? AND grupo = ? AND periodo = ? AND correoEstudiante = ?',
-            [nota, nombreCurso, grupo, periodo, correoEstudiante]
+            'SELECT grupo, COUNT(*) AS total FROM cursos WHERE periodo = ? GROUP BY grupo',
+            [periodo]
         );
-        return result;
+        return result; // Retorna el resultado con grupos y sus conteos
     } catch (error) {
-        console.error('Error en actualizarNota:', error.message);
+        console.error('Error en contarGruposPorPeriodo:', error.message);
         throw error;
     }
 }
 
-async function asignaturasPorCursar(usuario) {
+// Obtener un nuevo número de grupo
+async function obtenerNuevoGrupo(periodo) {
     try {
-        const [rows] = await connection.query(
-            `SELECT a.nombre, a.cupos, a.id
-             FROM asignaturasDB.asignaturas a 
-             LEFT JOIN cursosDB.cursos c 
-             ON TRIM(LOWER(a.nombre)) = TRIM(LOWER(c.nombreCurso)) 
-             AND c.correoEstudiante = (SELECT correo FROM usuariosDB.estudiantes WHERE usuario = ?) 
-             AND c.nota >= 3.0 
-             WHERE c.nombreCurso IS NULL 
-             AND a.cupos > 0`, 
-            [usuario]
-        );
-        return rows;
-    } catch (error) {
-        console.error('Error en asignaturasPorCursar:', error.message);
-        throw error;
-    }
-}
+        const grupos = await contarGruposPorPeriodo(periodo);
 
-async function obtenerNuevoGrupo(nombreAsignatura, periodo) {
-    try {
-        // Contar cuántos usuarios hay en cada grupo
-        const [rows] = await connection.query(
-            'SELECT grupo, COUNT(*) AS cantidad FROM cursos WHERE nombreCurso = ? AND periodo = ? GROUP BY grupo',
-            [nombreAsignatura, periodo]
-        );
+        // Filtrar grupos que tienen menos de 25 registros
+        const gruposDisponibles = grupos.filter(grupo => grupo.total < 25);
 
-        let grupo1 = 0;
-        let grupo2 = 0;
-
-        // Asignar la cantidad de usuarios a las variables grupo1 y grupo2
-        rows.forEach(row => {
-            if (row.grupo === 1) grupo1 = row.cantidad;
-            if (row.grupo === 2) grupo2 = row.cantidad;
-        });
-
-        // Si no hay registros, asignar al primer grupo
-        if (grupo1 === 0 && grupo2 === 0) {
-            return 1;
+        // Si hay grupos disponibles, retorna el primer grupo disponible
+        if (gruposDisponibles.length > 0) {
+            return gruposDisponibles[0].grupo; // Retorna el grupo existente que tiene menos de 25 registros
         }
 
-        // Asignar al grupo con menos usuarios
-        if (grupo1 <= grupo2) {
-            return 1;
+        // Si no hay grupos disponibles, verifica el máximo grupo creado
+        const [maxGroupResult] = await connection.query(
+            'SELECT MAX(grupo) AS maxGrupo FROM cursos WHERE periodo = ?',
+            [periodo]
+        );
+        const maxGrupo = maxGroupResult[0].maxGrupo || 0;
+
+        // Crea un nuevo grupo si es menor a 3
+        if (maxGrupo < 3) {
+            return maxGrupo + 1; // Incrementa el grupo si es menor a 3
         } else {
-            return 2;
+            throw new Error('Se han alcanzado el límite de grupos (1-3)');
         }
     } catch (error) {
         console.error('Error en obtenerNuevoGrupo:', error.message);
@@ -141,16 +122,56 @@ async function obtenerNuevoGrupo(nombreAsignatura, periodo) {
 }
 
 
+
+// Obtener asignaturas no cursadas o con nota baja
+async function obtenerAsignaturasNoCursadasONotaBaja(nombreEstudiante, notaLimite = 3.0) {
+    try {
+        const [result] = await connection.query(`
+            SELECT a.nombreCurso, c.nota
+            FROM cursos a
+            LEFT JOIN cursos c ON a.nombreCurso = c.nombreCurso AND c.nombreEstudiante = ?
+            WHERE c.nota IS NULL OR c.nota < ?
+        `, [nombreEstudiante, notaLimite]);
+
+        return result;
+    } catch (error) {
+        console.error('Error en obtenerAsignaturasNoCursadasONotaBaja:', error.message);
+        throw error;
+    }
+}
+
+// Contar estudiantes en un grupo específico
+async function contarEstudiantesEnGrupo(nombreCurso, grupo) {
+    const [result] = await connection.query('SELECT COUNT(*) AS cantidad FROM cursos WHERE nombreCurso = ? AND grupo = ?', [nombreCurso, grupo]);
+    return result[0].cantidad;
+}
+
+// Contar grupos para un nombre de curso y periodo
+async function contarGruposPorNombreCurso(nombreCurso, periodo) {
+    try {
+        const [result] = await connection.query(
+            'SELECT grupo, COUNT(*) AS total FROM cursos WHERE nombreCurso = ? AND periodo = ? GROUP BY grupo',
+            [nombreCurso, periodo]
+        );
+        return result; // Retorna el resultado con grupos y sus conteos
+    } catch (error) {
+        console.error('Error en contarGruposPorNombreCurso:', error.message);
+        throw error;
+    }
+}
+
+
+
 module.exports = {
-    obtenerTodosLosCursos,
-    traerCursoPorId,
     obtenerCursosPorEstudianteYPeriodo,
-    obtenerCursosPasadosPorEstudiante,
     obtenerCursosPorProfesorYPeriodo,
-    obtenerCursosPorGrupoYNombre,
-    obtenerCorreoProfesorPorCursoYGrupo,
+    obtenerTodosLosCursos,
+    traerCursoPorNombreYGrupo,
     crearCurso,
-    actualizarNota,
-    asignaturasPorCursar,
+    actualizarNotaPorNombre,
     obtenerNuevoGrupo,
+    obtenerAsignaturasNoCursadasONotaBaja,
+    obtenerCursosPorEstudianteNoPeriodo,
+    contarEstudiantesEnGrupo,
+    contarGruposPorNombreCurso
 };

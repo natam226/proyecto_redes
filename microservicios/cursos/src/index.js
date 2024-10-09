@@ -9,7 +9,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 
 app.use(cors({
-    origin: 'http://localhost:3000, http://192.168.100.2'  // Permite solicitudes solo desde localhost:3000
+    origin: '*'  // Permite solicitudes solo desde localhost:3000
 }));
 app.use(cors({
     origin: '*',  // Permite solicitudes desde cualquier origen

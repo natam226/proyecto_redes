@@ -6,9 +6,9 @@ def obtener_conexion():
         conn = mysql.connector.connect(
             host="localhost",
             user="root",
-            password="",
+            password="MillY0619*",
             database="usuariosDB",
-            port=3307
+            port=3306
         )
         return conn
     except OperationalError:

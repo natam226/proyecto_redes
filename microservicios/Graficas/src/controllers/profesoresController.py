@@ -14,10 +14,12 @@ def grafico_aprobados_reprobados(usuario):
         correo = info[0]['correo']
         datos = obtener_rendimiento_estudiantes(correo)
     
-    if datos is None:
-        return jsonify({"error": "Error al conectar con la base de datos"}), 500
-    if not datos:
-        return jsonify({"error": "No se encontraron datos para el profesor"}), 404
+        if datos is None:
+            return jsonify({"error": "Error al conectar con la base de datos"}), 500
+        if not datos:
+            return jsonify({"error": "No se encontraron datos para el profesor"}), 404
     
-    grafico_path = generar_grafico_rendimiento_estudiantes(datos)
-    return jsonify({"grafico": grafico_path}), 200
+        grafico_path = generar_grafico_rendimiento_estudiantes(datos)
+        return jsonify({"grafico": grafico_path}), 200
+    else:
+        return jsonify({"error": "No se encontró el correo del profesor"}), 404
