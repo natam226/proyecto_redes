@@ -12,23 +12,32 @@
             margin: 0;
             font-family: Arial, sans-serif;
         }
+        /* Sidebar */
         .sidebar {
-            width: 250px;
-            background-color: #003366; /* Azul oscuro */
-            padding-top: 20px;
-            position: fixed;
             height: 100%;
-            overflow: auto;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #003366;
+            padding-top: 30px;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 0 15px 15px 0;
+            z-index: 1000;
         }
         .sidebar a {
-            padding: 10px 15px;
+            padding: 15px 25px;
             text-decoration: none;
-            color: #ffffff;
-            display: block;
             font-size: 18px;
+            color: white;
+            display: block;
+            border-radius: 5px;
+            margin: 15px 10px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
         .sidebar a:hover {
-            background-color: #002244;
+            background-color: #004080;
+            transform: translateX(10px);
         }
         .content {
             margin-left: 250px;

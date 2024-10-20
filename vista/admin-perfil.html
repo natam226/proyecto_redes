@@ -8,9 +8,10 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
             background-color: #f8f9fa;
+            font-family: 'Roboto', sans-serif;
         }
+        /* Sidebar */
         .sidebar {
             height: 100%;
             width: 250px;
@@ -19,6 +20,8 @@
             left: 0;
             background-color: #003366;
             padding-top: 20px;
+            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
+            border-radius: 0 15px 15px 0;
         }
         .sidebar a {
             padding: 15px 25px;
@@ -26,28 +29,90 @@
             font-size: 18px;
             color: white;
             display: block;
+            border-radius: 5px;
+            margin: 10px 0;
+            transition: background-color 0.3s ease;
         }
         .sidebar a:hover {
             background-color: #575757;
         }
+        
+        /* Content */
         .content {
-            margin-left: 260px;
-            padding: 20px;
+            margin-left: 270px;
+            padding: 40px;
         }
+        
+        /* Header */
+        h2 {
+            color: #003366;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        /* Form Styles */
+        .form-group input, .form-group select {
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #003366;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
         .btn-primary {
             background-color: #003366;
             border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
+
         .btn-primary:hover {
             background-color: #002244;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
         }
-        .form-control[disabled] {
-            background-color: #e9ecef;
+
+        .btn-success {
+            background-color: #28a745;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .text-center {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
+    <!-- Sidebar -->
     <div class="sidebar">
         <a href="cursos-gestion.html">Gestión de Cursos</a>
         <a href="usuarios-gestion.html">Gestión de Usuarios</a>
@@ -57,8 +122,9 @@
         <a href="cerrar-sesion.html">Cerrar sesión</a>
     </div>
 
+    <!-- Content -->
     <div class="content">
-        <h2 class="text-center">Perfil del Administrador</h2>
+        <h2>Perfil del Administrador</h2>
         <form id="adminForm">
             <div class="form-group">
                 <label for="usuario">Usuario</label>
@@ -79,6 +145,7 @@
             <div class="form-group">
                 <label for="ultimoGradoDeFormacion">Último Grado de Formación:</label>
                 <select class="form-control" id="ultimoGradoDeFormacion" disabled>
+                    <option value="" disabled selected></option>
                     <option value="Bachiller">Bachiller</option>
                     <option value="Pregrado">Pregrado</option>
                     <option value="Maestria">Maestría</option>
