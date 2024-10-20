@@ -9,38 +9,74 @@
     <style>
         body {
             background-color: #f8f9fa;
+            font-family: 'Roboto', sans-serif; /* Fuente moderna */
+        }
+        .container {
+            margin-top: 80px;
+        }
+        .form-group input {
+            padding: 15px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
         .btn-primary {
-            background-color: #007bff; /* Azul claro */
+            background: linear-gradient(90deg, #0062E6, #33AEFF);
             border: none;
+            padding: 15px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
         }
         .btn-primary:hover {
-            background-color: #0056b3; /* Azul más oscuro */
+            background: linear-gradient(90deg, #002f5f, #0677bd);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .login-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #000000;
+            font-weight: bold;
+            margin-bottom: 30px;
         }
         .error-message {
             color: #dc3545; /* Rojo para mensajes de error */
         }
+        .text-center p a {
+            color: #0062E6;
+            text-decoration: none;
+        }
+        .text-center p a:hover {
+            color: #33AEFF;
+        }
     </style>
 </head>
 <body>
-    <div class="container mt-5">
+    <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <h2 class="text-center">Login Estudiante</h2>
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label for="usuario">Usuario:</label>
-                        <input type="text" class="form-control" id="usuario" required>
+                <div class="login-container">
+                    <h2 class="text-center">Login Estudiante</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="usuario">Usuario:</label>
+                            <input type="text" class="form-control" id="usuario" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contrasena">Contraseña:</label>
+                            <input type="password" class="form-control" id="contrasena" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button>
+                        <div id="error-message" class="text-center mt-3 error-message" style="display: none;"></div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>¿No tienes cuenta? <a href="crear-usuario-estudiante.html">Crea una</a></p>
                     </div>
-                    <div class="form-group">
-                        <label for="contrasena">Contraseña:</label>
-                        <input type="password" class="form-control" id="contrasena" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button>
-                    <div id="error-message" class="text-center mt-3 error-message" style="display: none;"></div>
-                </form>
-                <div class="text-center mt-3">
-                    <p>¿No tienes cuenta? <a href="crear-usuario-estudiante.html">Crea una</a></p>
                 </div>
             </div>
         </div>
@@ -54,21 +90,19 @@
 
                 $.get(`http://192.168.100.3:3005/estudiantes/${usuario}/${contrasena}`)
                     .done(function(response) {
-                        // Verifica si la respuesta contiene información del estudiante
                         if (response && Object.keys(response).length > 0) {
-                            // Guardar el usuario en localStorage
                             localStorage.setItem('usuario', usuario);
-                            // Redirigir a la página de perfil del estudiante
                             window.location.href = `cursos-inscritos.html`;
                         } else {
-                            $('#error-message').text('Usuario o contraseña incorrectos').show(); // Muestra el mensaje de error
+                            $('#error-message').text('Usuario o contraseña incorrectos').show();
                         }
                     })
                     .fail(function() {
-                        $('#error-message').text('Error al conectar con el servidor').show(); // Muestra mensaje de error en caso de fallo de conexión
+                        $('#error-message').text('Error al conectar con el servidor').show();
                     });
             });
         });
     </script>
 </body>
 </html>
+

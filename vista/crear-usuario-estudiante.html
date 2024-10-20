@@ -9,90 +9,128 @@
     <style>
         body {
             background-color: #f8f9fa;
+            font-family: 'Roboto', sans-serif;
+        }
+        .container {
+            margin-top: 80px;
+        }
+        .form-group input, .form-group select {
+            padding: 15px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .form-control {
+            margin: 8px 0;
+            box-sizing: border-box;
         }
         .btn-primary {
-            background-color: #003366; /* Azul oscuro */
+            background: linear-gradient(90deg, #0062E6, #33AEFF);
             border: none;
+            padding: 15px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
         }
         .btn-primary:hover {
-            background-color: #002244;
+            background: linear-gradient(90deg, #002f5f, #0677bd);
+        }
+        .signup-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #000000;
+            font-weight: bold;
+            margin-bottom: 30px;
         }
     </style>
 </head>
 <body>
-    <div class="container mt-5">
+    <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <h2 class="text-center">Crear Cuenta de Estudiante</h2>
-                <form id="crearCuentaForm">
-                    <div class="form-group">
-                        <label for="usuario">Usuario:</label>
-                        <input type="text" class="form-control" id="usuario" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="contrasena">Contraseña:</label>
-                        <input type="password" class="form-control" id="contrasena" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="nombre">Nombre:</label>
-                        <input type="text" class="form-control" id="nombre" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="correo">Correo:</label>
-                        <input type="email" class="form-control" id="correo" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="paisOrigen">País de Origen:</label>
-                        <input type="text" class="form-control" id="paisOrigen" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="necesidadesEspecialesEducacion">Necesidades Especiales de Educación:</label>
-                        <select class="form-control" id="necesidadesEspecialesEducacion" required>
-                            <option value="si">Sí</option>
-                            <option value="no">No</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="genero">Género:</label>
-                        <select class="form-control" id="genero" required>
-                            <option value="Masculino">Masculino</option>
-                            <option value="Femenino">Femenino</option>
-                            <option value="Otro">Otro</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="estadoCivil">Estado Civil:</label>
-                        <select class="form-control" id="estadoCivil" required>
-                            <option value="Soltero">Soltero</option>
-                            <option value="Casado">Casado</option>
-                            <option value="Divorciado">Divorciado</option>
-                            <option value="Viudo">Viudo</option>
-                            <option value="Union libre">Unión libre</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="prestamo">¿Tiene Préstamo?:</label>
-                        <select class="form-control" id="prestamo" required>
-                            <option value="si">Sí</option>
-                            <option value="no">No</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="beca">¿Tiene Beca?:</label>
-                        <select class="form-control" id="beca" required>
-                            <option value="si">Sí</option>
-                            <option value="no">No</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="desplazado">¿Desplazado?:</label>
-                        <select class="form-control" id="desplazado" required>
-                            <option value="si">Sí</option>
-                            <option value="no">No</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block">Crear Cuenta</button>
-                </form>
+                <div class="signup-container">
+                    <h2 class="text-center">Crear Cuenta de Estudiante</h2>
+                    <form id="crearCuentaForm">
+                        <div class="form-group">
+                            <label for="usuario">Usuario:</label>
+                            <input type="text" class="form-control" id="usuario" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contrasena">Contraseña:</label>
+                            <input type="password" class="form-control" id="contrasena" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="nombre">Nombre:</label>
+                            <input type="text" class="form-control" id="nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="correo">Correo:</label>
+                            <input type="email" class="form-control" id="correo" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="paisOrigen">País de Origen:</label>
+                            <input type="text" class="form-control" id="paisOrigen" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="necesidadesEspecialesEducacion">Necesidades Especiales de Educación:</label>
+                            <select class="form-control" id="necesidadesEspecialesEducacion" required>
+                                <option value="" disabled selected></option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="genero">Género:</label>
+                            <select class="form-control" id="genero" required>
+                                <option value="" disabled selected></option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Femenino">Femenino</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="estadoCivil">Estado Civil:</label>
+                            <select class="form-control" id="estadoCivil" required>
+                                <option value="" disabled selected></option>
+                                <option value="Soltero">Soltero</option>
+                                <option value="Casado">Casado</option>
+                                <option value="Divorciado">Divorciado</option>
+                                <option value="Viudo">Viudo</option>
+                                <option value="Union libre">Unión libre</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="prestamo">¿Tiene Préstamo?:</label>
+                            <select class="form-control" id="prestamo" required>
+                                <option value="" disabled selected></option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="beca">¿Tiene Beca?:</label>
+                            <select class="form-control" id="beca" required>
+                                <option value="" disabled selected></option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="desplazado">¿Desplazado?:</label>
+                            <select class="form-control" id="desplazado" required>
+                                <option value="" disabled selected></option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Crear Cuenta</button>
+                    </form>
+                </div> 
             </div>
         </div>
     </div>
