@@ -10,32 +10,57 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
         }
         .sidebar {
             height: 100%;
-            width: 250px; 
-            position: fixed; 
+            width: 250px;
+            position: fixed;
             top: 0;
             right: 0;
-            background-color: #343a40; 
-            color: #ffffff; 
-            padding-top: 20px;
-            z-index: 1000; 
+            background-color: #0062E6;
+            padding-top: 30px;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 15px 0 0 15px;
+            z-index: 1000;
         }
         .sidebar a {
-            padding: 15px 20px;
+            padding: 15px 25px;
             text-decoration: none;
             font-size: 18px;
-            color: #ffffff;
+            color: white;
             display: block;
+            border-radius: 5px;
+            margin: 15px 10px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            font-weight: bold;
         }
         .sidebar a:hover {
-            background-color: #495057; 
+            background-color: #0062E6;
+            transform: translateX(10px);
         }
         .content {
-            margin-right: 250px; 
+            margin-right: 250px;
             padding: 20px;
+            width: calc(100% - 250px);
+        }
+        h2 {
+            margin-bottom: 30px;
+            color: #000000;
+            font-weight: bold;
+        }
+        .btn-primary {
+            background-color: #0062E6;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #0062E6;
+            transform: translateY(-2px);
         }
     </style>
 </head>
@@ -53,7 +78,7 @@
     <div class="content">
         <div class="container mt-5">
             <h2 class="text-center">Matrícula de Cursos</h2>
-            <button type="button" id="cargarAsignaturas" class="btn btn-secondary">Cargar Asignaturas</button>
+            <button type="button" id="cargarAsignaturas" class="btn btn-primary">Cargar Asignaturas</button>
             <div id="tablaAsignaturas" class="mt-4"></div>
             <div id="resultado" class="mt-3"></div>
         </div>
