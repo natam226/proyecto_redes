@@ -165,10 +165,13 @@ router.post('/cursos/matricular', async (req, res) => {
             };
         } else {
             const profesores = await cursosModel.obtenerProfesores();
+            console.log('Profesores disponibles:', profesores); // Verifica los profesores disponibles
+
             if (profesores.length === 0) {
                 return res.status(500).json({ error: 'No hay profesores disponibles' });
             }
             profesor = profesores[Math.floor(Math.random() * profesores.length)];
+            console.log('Profesor asignado:', profesor); // Verifica el profesor asignado
         }
 
         const nuevoCurso = {
