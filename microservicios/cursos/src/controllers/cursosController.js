@@ -164,8 +164,8 @@ router.post('/cursos/matricular', async (req, res) => {
                 correo: cursoExistente.correoProfesor
             };
         } else {
-            const responseProfesores = await axios.get('http://localhost:3005/profesores');
-            const profesores = responseProfesores.data;
+            // Obtener lista de profesores y seleccionar uno aleatoriamente
+            const profesores = await obtenerProfesores();
             profesor = profesores[Math.floor(Math.random() * profesores.length)];
         }
 

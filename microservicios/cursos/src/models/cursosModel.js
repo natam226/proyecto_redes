@@ -133,14 +133,14 @@ async function obtenerNuevoGrupo(periodo) {
 }
 
 // Obtener asignaturas no cursadas o con nota baja
-async function obtenerAsignaturasNoCursadasONotaBaja(nombreEstudiante, notaLimite = 3.0) {
+async function obtenerAsignaturasNoCursadasONotaBaja(nombreEstudiante) {
     try {
         const [result] = await connection.query(`
             SELECT a.nombreCurso, c.nota
             FROM cursos a
             LEFT JOIN cursos c ON a.nombreCurso = c.nombreCurso AND c.nombreEstudiante = ?
-            WHERE c.nota IS NULL OR c.nota < 3
-        `, [nombreEstudiante, notaLimite]);
+            WHERE c.nombreEstudiante IS NULL OR c.nota < 3
+        `, [nombreEstudiante]);
 
         return result;
     } catch (error) {
@@ -165,6 +165,17 @@ async function contarGruposPorNombreCurso(nombreCurso, periodo) {
         return result; // Retorna el resultado con grupos y sus conteos
     } catch (error) {
         console.error('Error en contarGruposPorNombreCurso:', error.message);
+        throw error;
+    }
+}
+
+// Función para obtener una lista de profesores desde un endpoint
+async function obtenerProfesores() {
+    try {
+        const responseProfesores = await axios.get('http://localhost:3005/profesores');
+        return responseProfesores.data;
+    } catch (error) {
+        console.error('Error al obtener profesores:', error.message);
         throw error;
     }
 }
