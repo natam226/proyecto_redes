@@ -4,7 +4,6 @@ const cursosModel = require('../models/cursosModel');
 const axios = require('axios');
 
 // Obtener cursos que un estudiante ha cursado en el pasado
-// Obtener cursos que un estudiante ha cursado en el pasado
 router.get('/cursos/estudiante/:nombreEstudiante/pasados', async (req, res) => {
     const { nombreEstudiante } = req.params;
 
@@ -60,6 +59,25 @@ router.get('/cursos/profesor/:correoProfesor', async (req, res) => {
     }
 });
 
+router.get('/cursos/notas/:correoEstudiante', async (req, res) => {
+    const { correoEstudiante } = req.params;
+    try {
+        const cursos = await cursosModel.obtenerNotasPorEstudiante(correoEstudiante);
+        res.json(cursos);
+    } catch (error) {
+        res.status(500).json({ error: `Error al obtener los notas del alumno: ${error.message}` });
+    }
+});
+
+router.get('/cursos/rendimiento/:correoProfesor', async (req, res) => {
+    const { correoProfesor } = req.params;
+    try {
+        const cursos = await cursosModel.traerCursoPorProfe(correoProfesor,);
+        res.json(cursos);
+    } catch (error) {
+        res.status(500).json({ error: `Error al obtener los cursos del profesor: ${error.message}` });
+    }
+});
 
 // Obtener todos los cursos sin ningún filtro
 router.get('/cursos', async (req, res) => {

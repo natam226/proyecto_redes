@@ -23,13 +23,19 @@ async function obtenerCursosPorEstudianteNoPeriodo(nombreEstudiante, periodoExcl
     return results;
 }
 
-
-
 // Obtener cursos por profesor y periodo
 async function obtenerCursosPorProfesorYPeriodo(correoProfesor, periodo) {
     const [result] = await connection.query(
         `SELECT * FROM cursos WHERE correoProfesor = ? AND periodo = ?`,
         [correoProfesor, periodo]
+    );
+    return result;
+}
+
+async function obtenerNotasPorEstudiante(correoEstudiante) {
+    const [result] = await connection.query(
+        `SELECT nombreCurso, nota, periodo FROM cursos WHERE correoEstudiante = ?`,
+        correoEstudiante
     );
     return result;
 }
@@ -50,6 +56,11 @@ async function traerCursoPorNombreYGrupo(nombreCurso, grupo) {
     return results; // Asegúrate de que retornas todos los resultados
 }
 
+async function traerCursoPorProfe(correoProfesor) {
+    const query = "SELECT nombreCurso, nota FROM cursos WHERE correoProfesor = ?";    
+    const [results] = await connection.query(query, [correoProfesor]);
+    return results; // Asegúrate de que retornas todos los resultados
+}
 
 // Crear un nuevo curso
 async function crearCurso(curso) {
@@ -74,7 +85,7 @@ async function actualizarNotaPorNombre(nombreEstudiante, grupo, nombreCurso, not
     );
     return result;
 }
-// Obtener un nuevo número de grupo
+
 // Obtener el número de grupos disponibles por periodo
 async function contarGruposPorPeriodo(periodo) {
     try {
@@ -121,8 +132,6 @@ async function obtenerNuevoGrupo(periodo) {
     }
 }
 
-
-
 // Obtener asignaturas no cursadas o con nota baja
 async function obtenerAsignaturasNoCursadasONotaBaja(nombreEstudiante, notaLimite = 3.0) {
     try {
@@ -161,12 +170,13 @@ async function contarGruposPorNombreCurso(nombreCurso, periodo) {
 }
 
 
-
 module.exports = {
     obtenerCursosPorEstudianteYPeriodo,
     obtenerCursosPorProfesorYPeriodo,
+    obtenerNotasPorEstudiante,
     obtenerTodosLosCursos,
     traerCursoPorNombreYGrupo,
+    traerCursoPorProfe,
     crearCurso,
     actualizarNotaPorNombre,
     obtenerNuevoGrupo,

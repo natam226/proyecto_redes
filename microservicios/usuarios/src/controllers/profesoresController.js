@@ -19,6 +19,14 @@ router.get('/profesores/:usuario', async (req, res) => {
     res.json(result[0]);
 });
 
+router.get('/correoprof/:usuario', async (req, res) => {
+    const usuario = req.params.usuario;
+    var result;
+    result = await profesoresModel.traerCorreo(usuario);
+    //console.log(result);
+    res.json(result[0]);
+});
+
 router.get('/profesores/:usuario/:contrasena/:rol', async (req, res) => {
     const usuario = req.params.usuario;
     const contrasena = req.params.contrasena;

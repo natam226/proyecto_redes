@@ -19,6 +19,14 @@ router.get('/estudiantes/:usuario', async (req, res) => {
     res.json(result[0]);
 });
 
+router.get('/CorreoEstudiante/:usuario', async (req, res) => {
+    const usuario = req.params.usuario;
+    var result;
+    result = await estudiantesModel.traerCorreoEstudiante(usuario);
+    //console.log(result);
+    res.json(result[0]);
+});
+
 router.get('/estudiantes/:usuario/:contrasena', async (req, res) => {
     const usuario = req.params.usuario;
     const contrasena = req.params.contrasena;

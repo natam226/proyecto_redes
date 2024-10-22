@@ -14,8 +14,14 @@ async function traerEstudiantes() {
     const result = await connection.query('SELECT * FROM estudiantes');
     return result[0];
 }
+
 async function traerEstudiante(usuario) {
     const result = await connection.query('SELECT * FROM estudiantes WHERE usuario = ?', usuario);
+    return result[0];
+}
+
+async function traerCorreoEstudiante(usuario) {
+    const result = await connection.query('SELECT correo FROM estudiantes WHERE usuario = ?', usuario);
     return result[0];
 }
 
@@ -26,8 +32,6 @@ async function actualizarEstudiantes(usuario, contrasena, nombre, correo, genero
     );
     return result;
 }
-
-
 
 async function validarEstudiante(usuario, contrasena) {
     const result = await connection.query('SELECT * FROM estudiantes WHERE usuario = ? AND contrasena = ?', [usuario, contrasena]);
@@ -60,5 +64,12 @@ async function actualizarCreditos(usuario, totalCreditos) {
 
 
 module.exports = {
-    traerEstudiantes, traerEstudiante, actualizarEstudiantes, validarEstudiante, crearEstudiante, borrarEstudiante, actualizarCreditos
+    traerEstudiantes, 
+    traerEstudiante,
+    traerCorreoEstudiante,
+    actualizarEstudiantes, 
+    validarEstudiante, 
+    crearEstudiante, 
+    borrarEstudiante, 
+    actualizarCreditos
 }

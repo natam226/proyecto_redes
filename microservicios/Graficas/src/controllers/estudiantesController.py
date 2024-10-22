@@ -10,7 +10,7 @@ def obtener_grafico_promedio(usuario):
     info = obtener_correo_estudiante(usuario)
 
     if info and len(info) > 0:  # Asegúrate de que 'info' tenga al menos un resultado
-        correo = info[0]['correo']  # Accede al primer elemento de la lista y luego al campo 'correo'
+        correo = info['correo']
         notas = obtener_notas_estudiante(correo)
         
     if notas:
