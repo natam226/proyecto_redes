@@ -20,6 +20,11 @@ async function traerProfesor(usuario) {
     return result[0];
 }
 
+async function traerCorreo(usuario) {
+    const result = await connection.query('SELECT correo FROM profesores WHERE usuario = ?', usuario);
+    return result[0];
+}
+
 async function actualizarProfesor(usuario, contrasena, nombre, correo, ultimoGradoDeFormacion) {
     const result = await connection.query('UPDATE profesores SET contrasena = ?, nombre = ?, correo = ?, ultimoGradoDeFormacion = ? WHERE usuario = ?', [contrasena, nombre, correo, ultimoGradoDeFormacion, usuario]);
     return result;
@@ -41,5 +46,11 @@ async function borrarProfesor(usuario) {
 }
 
 module.exports = {
-    traerProfesores, traerProfesor, actualizarProfesor, validarProfesor, crearProfesor, borrarProfesor
+    traerProfesores, 
+    traerProfesor, 
+    traerCorreo, 
+    actualizarProfesor, 
+    validarProfesor, 
+    crearProfesor, 
+    borrarProfesor
 }

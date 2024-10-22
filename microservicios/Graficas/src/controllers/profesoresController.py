@@ -1,17 +1,18 @@
-from flask import Blueprint, jsonify, request
-from src.models.cursosModel import obtener_rendimiento_estudiantes
+from flask import Blueprint, jsonify
 from src.models.profesoresModel import obtener_correo_profesor
+from src.models.cursosModel import obtener_rendimiento_estudiantes
 from src.services.graficoService import generar_grafico_rendimiento_estudiantes
 
 profesor_bp = Blueprint('profesor_bp', __name__)
 
 @profesor_bp.route('/profesor/<string:usuario>/grafico-aprobados-reprobados', methods=['GET'])
 def grafico_aprobados_reprobados(usuario):
-    # Obtener datos de la base de datos
+
     info = obtener_correo_profesor(usuario)
     
     if info and len(info) > 0:  # Asegúrate de que 'info' tenga al menos un resultado
-        correo = info[0]['correo']
+        correo = info['correo']
+
         datos = obtener_rendimiento_estudiantes(correo)
     
         if datos is None:
