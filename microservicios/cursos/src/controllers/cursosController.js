@@ -47,24 +47,6 @@ router.get('/cursos/estudiante/:nombreEstudiante/actual', async (req, res) => {
     }
 });
 
-module.exports = router;
-
-
-// Obtener cursos que un estudiante está cursando actualmente
-router.get('/cursos/estudiante/:nombreEstudiante/actual', async (req, res) => {
-    const { nombreEstudiante } = req.params;
-    try {
-        const responseEstudiante = await axios.get(`http://localhost:3005/estudiantes/${nombreEstudiante}`);
-        if (responseEstudiante.status !== 200) {
-            return res.status(404).json({ error: 'Estudiante no encontrado' });
-        }
-
-        const cursos = await cursosModel.obtenerCursosPorEstudianteYPeriodo(nombreEstudiante, '2024-3');
-        res.json(cursos);
-    } catch (error) {
-        res.status(500).json({ error: `Error al obtener los cursos actuales del estudiante: ${error.message}` });
-    }
-});
 
 // Obtener cursos de un profesor en un periodo específico
 router.get('/cursos/profesor/:correoProfesor', async (req, res) => {
