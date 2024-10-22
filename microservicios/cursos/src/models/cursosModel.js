@@ -139,7 +139,7 @@ async function obtenerAsignaturasNoCursadasONotaBaja(nombreEstudiante, notaLimit
             SELECT a.nombreCurso, c.nota
             FROM cursos a
             LEFT JOIN cursos c ON a.nombreCurso = c.nombreCurso AND c.nombreEstudiante = ?
-            WHERE c.nota IS NULL OR c.nota < ?
+            WHERE c.nota IS NULL OR c.nota < 3
         `, [nombreEstudiante, notaLimite]);
 
         return result;
