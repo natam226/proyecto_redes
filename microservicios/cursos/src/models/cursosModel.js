@@ -169,17 +169,11 @@ async function contarGruposPorNombreCurso(nombreCurso, periodo) {
     }
 }
 
-// Función para obtener una lista de profesores desde un endpoint
+// Obtener todos los profesores
 async function obtenerProfesores() {
-    try {
-        const responseProfesores = await axios.get('http://localhost:3005/profesores');
-        return responseProfesores.data;
-    } catch (error) {
-        console.error('Error al obtener profesores:', error.message);
-        throw error;
-    }
+    const [result] = await connection.query('SELECT nombre, correo FROM profesores');
+    return result;
 }
-
 
 module.exports = {
     obtenerCursosPorEstudianteYPeriodo,
@@ -194,5 +188,6 @@ module.exports = {
     obtenerAsignaturasNoCursadasONotaBaja,
     obtenerCursosPorEstudianteNoPeriodo,
     contarEstudiantesEnGrupo,
-    contarGruposPorNombreCurso
+    contarGruposPorNombreCurso,
+    obtenerProfesores
 };

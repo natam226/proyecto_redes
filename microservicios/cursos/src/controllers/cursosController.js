@@ -164,8 +164,10 @@ router.post('/cursos/matricular', async (req, res) => {
                 correo: cursoExistente.correoProfesor
             };
         } else {
-            // Obtener lista de profesores y seleccionar uno aleatoriamente
-            const profesores = await obtenerProfesores();
+            const profesores = await cursosModel.obtenerProfesores();
+            if (profesores.length === 0) {
+                return res.status(500).json({ error: 'No hay profesores disponibles' });
+            }
             profesor = profesores[Math.floor(Math.random() * profesores.length)];
         }
 
