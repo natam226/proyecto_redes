@@ -23,6 +23,10 @@ async function obtenerCursosPorEstudianteNoPeriodo(nombreEstudiante, periodoExcl
     return results;
 }
 
+async function obtenerCursos() {
+    return await obtenerTodosLosCursos();
+}
+
 // Obtener cursos por profesor y periodo
 async function obtenerCursosPorProfesorYPeriodo(correoProfesor, periodo) {
     const [result] = await connection.query(
@@ -46,15 +50,17 @@ async function obtenerTodosLosCursos() {
     return result;
 }
 
-// Traer curso por nombreCurso y grupo
 async function traerCursoPorNombreYGrupo(nombreCurso, grupo) {
     const query = `
-        SELECT nombreCurso, grupo, nombreEstudiante, correoEstudiante, nota
+        SELECT nombreCurso, grupo, nombreEstudiante, correoEstudiante, nota, profesor, correoProfesor
         FROM cursos
-        WHERE nombreCurso = ? AND grupo = ?`;    
-    const results = await connection.query(query, [nombreCurso, grupo]);
-    return results; // Asegúrate de que retornas todos los resultados
+        WHERE nombreCurso = ? AND grupo = ? AND periodo = ?`;    
+        
+    const periodo = '2024-3'; // Definir el periodo a filtrar
+    const [results] = await connection.query(query, [nombreCurso, grupo, periodo]);
+    return results.length > 0 ? results[0] : null; // Retorna solo el primer resultado o null si no hay ninguno
 }
+
 
 async function traerCursoPorProfe(correoProfesor) {
     const query = "SELECT nombreCurso, nota FROM cursos WHERE correoProfesor = ?";    
@@ -62,7 +68,7 @@ async function traerCursoPorProfe(correoProfesor) {
     return results; // Asegúrate de que retornas todos los resultados
 }
 
-// Crear un nuevo curso
+
 async function crearCurso(curso) {
     const { nombreCurso, grupo, profesor, correoProfesor, nombreEstudiante, correoEstudiante, nota, periodo } = curso;
     try {
@@ -175,6 +181,22 @@ async function obtenerProfesores() {
     return result;
 }
 
+// Obtener todos los profesores
+async function obtenerProfesores() {
+    const [result] = await connection.query('SELECT nombre, correo FROM profesores');
+    return result;
+}
+
+// Función para obtener un profesor aleatorio (ahora ficticio)
+const obtenerProfesorAleatorio = () => {
+    // Puedes personalizar los datos del profesor aquí
+    const profesor = {
+        nombre: 'Nombre del Profesor',
+        correo: 'correo@ejemplo.com'
+    };
+    return profesor;
+};
+
 module.exports = {
     obtenerCursosPorEstudianteYPeriodo,
     obtenerCursosPorProfesorYPeriodo,
@@ -189,5 +211,7 @@ module.exports = {
     obtenerCursosPorEstudianteNoPeriodo,
     contarEstudiantesEnGrupo,
     contarGruposPorNombreCurso,
-    obtenerProfesores
+    obtenerProfesores,
+    obtenerProfesorAleatorio,
+    obtenerCursos 
 };

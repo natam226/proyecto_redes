@@ -130,72 +130,114 @@ router.get('/cursos/asignaturas/no-cursadas-o-nota-baja/:nombreEstudiante', asyn
     }
 });
 
-
 // Matricular un estudiante en un curso
 router.post('/cursos/matricular', async (req, res) => {
     const { usuarioEstudiante, nombreAsignatura } = req.body;
 
+    // Verificar que los datos necesarios están presentes
     if (!usuarioEstudiante || !nombreAsignatura) {
+        console.error('Faltan datos en la solicitud:', { usuarioEstudiante, nombreAsignatura });
         return res.status(400).json({ error: 'Faltan datos en la solicitud' });
     }
 
     try {
+        // Obtener datos de la asignatura
         const responseAsignatura = await axios.get(`http://localhost:3006/asignaturas/nombre/${nombreAsignatura}`);
+        if (responseAsignatura.status !== 200) {
+            throw new Error('Error al obtener la asignatura');
+        }
         const { nombreAsignatura: nombre, cupos, creditos } = responseAsignatura.data;
 
+        // Obtener datos del estudiante
         const responseEstudiante = await axios.get(`http://localhost:3005/estudiantes/${usuarioEstudiante}`);
+        if (responseEstudiante.status !== 200) {
+            throw new Error('Error al obtener los datos del estudiante');
+        }
         const { nombre: nombreEstudiante, correo: correoEstudiante, totalCreditos } = responseEstudiante.data;
 
+        // Verificar límites de créditos
         if (totalCreditos + creditos > 18) {
             return res.status(400).json({ error: 'El estudiante supera el límite de 18 créditos' });
         }
 
+        // Verificar disponibilidad de cupos
         if (cupos <= 0) {
             return res.status(400).json({ error: 'No hay cupos disponibles' });
         }
 
-        const grupo = await cursosModel.obtenerNuevoGrupo('2024-3'); 
-        const cursoExistente = await cursosModel.traerCursoPorNombreYGrupo(nombre, grupo);
+        // Obtener el grupo
+        const grupo = await cursosModel.obtenerNuevoGrupo('2024-3');
 
+        // Verificar si ya hay un curso existente
+        const cursoExistente = await cursosModel.traerCursoPorNombreYGrupo(nombre, grupo);
         let profesor;
+
+        // Si existe un curso, asignar su profesor
         if (cursoExistente) {
             profesor = {
                 nombre: cursoExistente.profesor,
-                correo: cursoExistente.correoProfesor
+                correo: cursoExistente.correoProfesor,
             };
         } else {
-            const profesores = await axios.get('http://localhost:3005/profesores');;
-            console.log('Profesores disponibles:', profesores); // Verifica los profesores disponibles
+            console.log('No se encontró curso existente. Obteniendo un profesor aleatorio...');
 
-            profesor = profesores[Math.floor(Math.random() * profesores.length)];
-            if (profesores.length === 0) {
-                return res.status(500).json({ error: 'No hay profesores disponibles' });
+            // Obtener todos los profesores disponibles (Ajusta la URL según tu API de profesores)
+            const responseProfesores = await axios.get('http://localhost:3005/profesores');
+            if (responseProfesores.status !== 200) {
+                throw new Error('Error al obtener la lista de profesores');
             }
-            //profesor = profesores[Math.floor(Math.random() * profesores.length)];
-            //console.log('Profesor asignado:', profesor); // Verifica el profesor asignado
+
+            const profesores = responseProfesores.data;
+
+            // Comprobar si hay profesores disponibles
+            if (profesores.length === 0) {
+                return res.status(500).json({ error: 'No hay profesores disponibles para asignar.' });
+            }
+
+            // Seleccionar un profesor aleatorio
+            const profesorAleatorio = profesores[Math.floor(Math.random() * profesores.length)];
+            profesor = {
+                nombre: profesorAleatorio.nombre,
+                correo: profesorAleatorio.correo,
+            };
+
+            console.log('Profesor asignado:', profesor);
         }
 
+        // Verificar que el profesor tenga los campos necesarios
+        if (!profesor || !profesor.nombre || !profesor.correo) {
+            return res.status(500).json({ error: 'No se pudo asignar un profesor.' });
+        }
+
+        // Crear el nuevo curso
         const nuevoCurso = {
             nombreCurso: nombre,
-            grupo: grupo,
+            grupo,
             profesor: profesor.nombre,
             correoProfesor: profesor.correo,
-            nombreEstudiante: nombreEstudiante,
-            correoEstudiante: correoEstudiante,
+            nombreEstudiante,
+            correoEstudiante,
             nota: null,
-            periodo: '2024-3'
+            periodo: '2024-3',
         };
 
+        // Guardar el curso en la base de datos
         await cursosModel.crearCurso(nuevoCurso);
+
+        // Actualizar cupos de la asignatura
         await axios.put(`http://localhost:3006/asignaturas/${responseAsignatura.data.id}/cupos`, { cupos: cupos - 1 });
+
+        // Actualizar créditos del estudiante
         await axios.put(`http://localhost:3005/estudiantes/${usuarioEstudiante}/creditos`, { totalCreditos: totalCreditos + creditos });
 
         res.status(201).json({ message: 'Estudiante matriculado exitosamente' });
     } catch (error) {
-        console.error('Error en la matriculación:', error); // Log del error
+        console.error('Error en la matriculación:', error);
         res.status(500).json({ error: `Error al matricular estudiante: ${error.message}` });
     }
 });
+
+
 
 router.put('/cursos/actualizarNota', async (req, res) => {
     const { nombreEstudiante, grupo, nombreCurso, nota } = req.body;
