@@ -29,7 +29,7 @@ router.get('/CorreoEstudiante/:usuario', async (req, res) => {
 
 router.get('/estudiantes/:usuario/:contrasena', async (req, res) => {
     const usuario = req.params.usuario;
-    const contrasena = req.params.contrasena;
+    const contrasena = decodeURIcomponente(req.params.contrasena);
     var result;
     result = await estudiantesModel.validarEstudiante(usuario, contrasena);
     //console.log(result);

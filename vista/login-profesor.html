@@ -93,7 +93,7 @@
             $('#loginForm').on('submit', function(e) {
                 e.preventDefault();
                 const usuario = $('#usuario').val();
-                const contrasena = $('#contrasena').val();
+                const contrasena = encodeURIComponent($('#contrasena').val());
                 const rol = $('#rol').val();
 
                 $.get(`http://192.168.100.3:3005/profesores/${usuario}/${contrasena}/${rol}`)
