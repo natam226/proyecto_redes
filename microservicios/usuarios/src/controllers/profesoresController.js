@@ -27,7 +27,7 @@ router.get('/correoprof/:usuario', async (req, res) => {
     res.json(result[0]);
 });
 
-router.get('/profesores/:usuario/:contrasena/:rol', async (req, res) => {
+router.get('/profesores/login', async (req, res) => {
     const usuario = req.params.usuario;
     const contrasena = decodeURIcomponente(req.params.contrasena);
     const rol = req.params.rol;
