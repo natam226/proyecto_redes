@@ -152,6 +152,10 @@
             padding: 10px;
             font-size: 14px;
         }
+        /* Search bar */
+        .search-bar {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -167,6 +171,9 @@
     <div class="content">
         <h2 class="text-center">Gestión de Asignaturas</h2>
         <button class="btn btn-success mb-3" id="crearAsignaturaBtn">Crear Nueva Asignatura</button>
+        <div class="search-bar">
+            <input type="text" id="searchInput" class="form-control" placeholder="Buscar curso por nombre">
+        </div>
         <table class="table table-striped">
             <thead>
                 <tr>
