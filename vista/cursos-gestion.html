@@ -175,6 +175,13 @@
                 localStorage.setItem('estudiantes', JSON.stringify(estudiantes));
                 window.location.href = 'detalles-curso.html';
             });
+            $('#searchInput').on('keyup', function() {
+                const searchTerm = $(this).val().toLowerCase();
+                $('#cursosTable tr').each(function() {
+                    const rowText = $(this).text().toLowerCase();
+                    $(this).toggle(rowText.indexOf(searchTerm) !== -1);
+                });
+            });
         });
     </script>
 </body>
