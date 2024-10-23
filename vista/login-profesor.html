@@ -95,13 +95,12 @@
                 const usuario = $('#usuario').val();
                 const contrasena = encodeURIComponent($('#contrasena').val());
                 const rol = $('#rol').val();
-
+    
                 $.get(`http://192.168.100.3:3005/profesores/${usuario}/${contrasena}/${rol}`)
-                    .done(function() {
-                        // Guardar el usuario en localStorage
-                        localStorage.setItem('usuario', usuario);
-                        localStorage.setItem('rol', rol); // Opcional, si necesitas el rol también
-
+                    .done(function(data) {
+                        // Guardar la información del profesor en localStorage
+                        localStorage.setItem('profesorInfo', JSON.stringify(data));
+    
                         if (rol === 'Profesor') {
                             window.location.href = 'cursos-asignados.html'; // Redirige a la página de perfil del profesor
                         } else if (rol === 'Director') {

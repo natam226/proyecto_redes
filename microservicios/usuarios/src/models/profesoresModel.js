@@ -45,6 +45,12 @@ async function borrarProfesor(usuario) {
     return result[0];
 }
 
+// Nueva función para recuperar el perfil del profesor basado en usuario y contraseña
+async function traerPerfilProfesor(usuario, contrasena) {
+    const result = await connection.query('SELECT * FROM profesores WHERE usuario = ? AND contrasena = ?', [usuario, contrasena]);
+    return result[0];
+}
+
 module.exports = {
     traerProfesores, 
     traerProfesor, 
@@ -52,5 +58,6 @@ module.exports = {
     actualizarProfesor, 
     validarProfesor, 
     crearProfesor, 
-    borrarProfesor
+    borrarProfesor,
+    traerPerfilProfesor
 }

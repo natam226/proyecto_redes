@@ -27,15 +27,34 @@ router.get('/correoprof/:usuario', async (req, res) => {
     res.json(result[0]);
 });
 
+// Autenticación del profesor y retorno de la información del profesor
 router.get('/profesores/:usuario/:contrasena/:rol', async (req, res) => {
     const usuario = req.params.usuario;
     const contrasena = decodeURIComponent(req.params.contrasena);
     const rol = req.params.rol;
 
-    var result;
-    result = await profesoresModel.validarProfesor(usuario, contrasena, rol);
-    //console.log(result);
-    res.json(result[0]);
+    var result = await profesoresModel.validarProfesor(usuario, contrasena, rol);
+
+    if (result.length > 0) {
+        // Devuelve la información completa del profesor
+        res.json(result[0]);
+    } else {
+        res.status(401).json({ message: 'Usuario o contraseña incorrectos' });
+    }
+});
+
+// Nueva ruta para obtener el perfil del profesor basado en el usuario y la contraseña
+router.get('/perfilProfesor/:usuario/:contrasena', async (req, res) => {
+    const usuario = req.params.usuario;
+    const contrasena = decodeURIComponent(req.params.contrasena);
+
+    var result = await profesoresModel.traerPerfilProfesor(usuario, contrasena);
+
+    if (result.length > 0) {
+        res.json(result[0]);
+    } else {
+        res.status(404).json({ message: 'Perfil no encontrado' });
+    }
 });
 
 router.post('/profesores', async (req, res) => {
