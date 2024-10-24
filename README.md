@@ -3,7 +3,7 @@
 
 *[Valentina Bueno Collazos](https://github.com/valentinabc19)*
 
-*[Estefania Hernandez Rojas](https://github.com/HEstefaniaR))*
+*[Estefania Hernandez Rojas](https://github.com/HEstefaniaR)*
 
 *Valeria Franco Cordoba*
 
