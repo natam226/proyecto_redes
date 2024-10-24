@@ -1,4 +1,12 @@
 # Proyecto Redes e Infraestructura - Parte 1
+*[Natalia Moreno Montoya](https://github.com/natam226)*
+
+*[Valentina Bueno Collazos](https://github.com/valentinabc19)*
+
+*[Estefania Hernandez Rojas](https://github.com/HEstefaniaR))*
+
+*Valeria Franco Cordoba*
+
 
 El propósito de este proyecto es aplicar los conceptos aprendidos en la primera parte del curso mediante el desarrollo de una aplicación web básica que resuelva un problema contextual. La aplicación está enfocada en la visualización de datos a través de dashboards interactivos que muestran información almacenada en bases de datos, utilizando un dataset existente.
 
@@ -8,9 +16,9 @@ Para el desarrollo de este proyecto se hizo uso del siguiente dataset: https://w
 
 ## Tabla de Contenidos
 
-1. [Instalación y uso](https://github.com/natam226/proyecto_curso_redes/edit/main/README.md#instalaci%C3%B3n-y-uso)
-2. [Arquitectura](https://github.com/natam226/proyecto_curso_redes/edit/main/README.md#arquitectura)
-3. [Tecnologías](https://github.com/natam226/proyecto_curso_redes/edit/main/README.md#tecnolog%C3%ADas)
+1. [Instalación y uso](https://github.com/natam226/proyecto_curso_redes?tab=readme-ov-file#instalaci%C3%B3n-y-uso)
+2. [Arquitectura](https://github.com/natam226/proyecto_curso_redes?tab=readme-ov-file#arquitectura)
+3. [Tecnologías](https://github.com/natam226/proyecto_curso_redes?tab=readme-ov-file#tecnolog%C3%ADas)
 
 ## Instalación y uso
 
