@@ -29,7 +29,7 @@ router.get('/correoprof/:usuario', async (req, res) => {
 
 router.get('/profesores/:usuario/:contrasena/:rol', async (req, res) => {
     const usuario = req.params.usuario;
-    const contrasena = decodeURIComponent(req.params.contrasena);
+    const contrasena = req.params.contrasena;
     const rol = req.params.rol;
 
     var result;

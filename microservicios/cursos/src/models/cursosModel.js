@@ -181,12 +181,6 @@ async function obtenerProfesores() {
     return result;
 }
 
-// Obtener todos los profesores
-async function obtenerProfesores() {
-    const [result] = await connection.query('SELECT nombre, correo FROM profesores');
-    return result;
-}
-
 // Función para obtener un profesor aleatorio (ahora ficticio)
 const obtenerProfesorAleatorio = () => {
     // Puedes personalizar los datos del profesor aquí
