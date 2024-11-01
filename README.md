@@ -5,7 +5,7 @@
 
 *[Estefania Hernandez Rojas](https://github.com/HEstefaniaR)*
 
-*Valeria Franco Cordoba*
+*[Valeria Franco Cordoba](https://github.com/Hola12334)*
 
 
 El propósito de este proyecto es aplicar los conceptos aprendidos en la primera parte del curso mediante el desarrollo de una aplicación web básica que resuelva un problema contextual. La aplicación está enfocada en la visualización de datos a través de dashboards interactivos que muestran información almacenada en bases de datos, utilizando un dataset existente.
