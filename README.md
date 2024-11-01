@@ -80,7 +80,7 @@ Para el desarrollo de este proyecto se hizo uso del siguiente dataset: https://w
 
 ## Arquitectura
 
-![Arquitectura](diagrama/arquitectura.jpg)
+![Arquitectura](diagrama/DiagramaArquitectura.jpg)
 
 ## Tecnologías
 
